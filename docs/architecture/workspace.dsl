@@ -1,90 +1,54 @@
 workspace "AI-QA Lab" "AI-augmented E2E testing and failure investigation platform." {
 
+    !identifiers hierarchical
+
     model {
+        tester = person "Tester / Developer" "Uses AI-QA Lab."
 
-        tester = person "Tester / Developer"
-            "Uses AI-QA Lab to execute automated tests and investigate failures."
+        toolshop = softwareSystem "Toolshop" "System Under Test."
 
-        toolshop = softwareSystem "Toolshop"
-            "Practice Software Testing Toolshop application used as the System Under Test."
-
-        aiQaLab = softwareSystem "AI-QA Lab"
-            "AI-augmented E2E testing and failure investigation platform." {
-
-            testAutomation = container "Test Automation"
-                "Executes E2E tests against the Toolshop application and produces test artifacts."
-                "TypeScript, Playwright"
-
-            testIntelligence = container "Test Intelligence"
-                "Processes test results and extracts structured failure information."
-                "TypeScript"
-
-            aiAnalysis = container "AI Analysis"
-                "Analyzes test failures and produces investigation results."
-                "TypeScript, LLM"
-
-            knowledgeService = container "Knowledge Service"
-                "Retrieves relevant project and historical testing knowledge."
-                "RAG"
-
-            mcpServer = container "MCP Server"
-                "Exposes controlled testing and investigation capabilities to AI clients."
-                "MCP"
-
-            resultsStore = container "Test Results Store"
-                "Stores test results, failure history and investigation artifacts."
-                "Database"
+        aiQaLab = softwareSystem "AI-QA Lab" "E2E testing and AI-assisted failure investigation platform." {
+            testAutomation = container "Test Automation" "Executes E2E tests." "TypeScript, Playwright"
+            testIntelligence = container "Test Intelligence" "Processes test results." "TypeScript"
+            aiAnalysis = container "AI Analysis" "Analyzes test failures." "TypeScript, LLM"
+            knowledgeService = container "Knowledge Service" "Retrieves testing knowledge." "RAG"
+            mcpServer = container "MCP Server" "Provides tools to AI clients." "MCP"
+            resultsStore = container "Test Results Store" "Stores test results and history." "Database"
         }
 
-        tester -> testAutomation
-            "Runs automated tests"
+        tester -> aiQaLab "Uses"
 
-        testAutomation -> toolshop
-            "Tests through browser automation"
+        aiQaLab.testAutomation -> toolshop "Tests"
 
-        testAutomation -> testIntelligence
-            "Publishes test results"
+        aiQaLab.testAutomation -> aiQaLab.testIntelligence "Publishes results"
 
-        testIntelligence -> resultsStore
-            "Stores results and failure information"
+        aiQaLab.testIntelligence -> aiQaLab.resultsStore "Stores results"
 
-        aiAnalysis -> testIntelligence
-            "Reads test results and failure information"
+        aiQaLab.aiAnalysis -> aiQaLab.testIntelligence "Reads failure information"
 
-        aiAnalysis -> knowledgeService
-            "Retrieves relevant knowledge"
+        aiQaLab.aiAnalysis -> aiQaLab.knowledgeService "Retrieves knowledge"
 
-        knowledgeService -> resultsStore
-            "Retrieves historical test information"
+        aiQaLab.knowledgeService -> aiQaLab.resultsStore "Retrieves historical information"
 
-        aiAnalysis -> mcpServer
-            "Uses testing and investigation tools"
+        aiQaLab.aiAnalysis -> aiQaLab.mcpServer "Uses tools"
 
-        mcpServer -> testAutomation
-            "Runs tests and browser operations"
-
-        mcpServer -> testIntelligence
-            "Retrieves test results"
+        aiQaLab.mcpServer -> aiQaLab.testAutomation "Runs tests"
     }
 
     views {
-
         systemContext aiQaLab "SystemContext" {
             include *
             autoLayout
-            title "AI-QA Lab — System Context"
         }
 
         container aiQaLab "ContainerArchitecture" {
             include *
             autoLayout
-            title "AI-QA Lab — Container Architecture"
         }
 
         styles {
-
             element "Person" {
-                shape person
+                shape Person
                 background #08427b
                 color #ffffff
             }
